@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meraki — The Coffee House</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #f5ede0;
+    --warm-white: #faf6f0;
+    --espresso: #1a0f08;
+    --dark-roast: #2d1a0e;
+    --medium-roast: #5c3317;
+    --amber: #c8782a;
+    --gold: #d4a853;
+    --light-gold: #e8c878;
+    --muted: #8a7060;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--espresso);
+    color: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 18px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to bottom, rgba(26,15,8,0.95), transparent);
+  }
+
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .nav-menu-btn {
+    background: none;
+    border: 1px solid rgba(212,168,83,0.4);
+    color: var(--gold);
+    padding: 7px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+  .nav-menu-btn:hover { background: var(--gold); color: var(--espresso); }
+
+  /* MOBILE MENU */
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--espresso);
+    z-index: 200;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 36px;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 40px;
+    font-weight: 300;
+    color: var(--cream);
+    text-decoration: none;
+    letter-spacing: 4px;
+    transition: color 0.3s;
+  }
+  .mobile-menu a:hover { color: var(--gold); }
+  .close-menu {
+    position: absolute;
+    top: 22px; right: 24px;
+    background: none; border: none;
+    color: var(--gold);
+    font-size: 28px;
+    cursor: pointer;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 24px 60px;
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse at 30% 60%, rgba(92,51,23,0.6) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(200,120,42,0.15) 0%, transparent 50%),
+      var(--espresso);
+  }
+
+  .hero-bg-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(80px, 40vw, 280px);
+    font-weight: 300;
+    color: rgba(255,255,255,0.03);
+    letter-spacing: -4px;
+    white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    border-top: 1px solid var(--gold);
+    padding-top: 8px;
+    margin-bottom: 20px;
+    animation: fadeUp 1s ease 0.2s both;
+  }
+
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(52px, 14vw, 90px);
+    font-weight: 300;
+    line-height: 0.95;
+    letter-spacing: -1px;
+    margin-bottom: 24px;
+    animation: fadeUp 1s ease 0.4s both;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .hero-desc {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 280px;
+    margin-bottom: 36px;
+    animation: fadeUp 1s ease 0.6s both;
+  }
+
+  .hero-ctas {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    animation: fadeUp 1s ease 0.8s both;
+  }
+
+  .btn-primary {
+    background: var(--gold);
+    color: var(--espresso);
+    border: none;
+    padding: 14px 28px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+  .btn-primary:hover { background: var(--light-gold); transform: translateY(-2px); }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--cream);
+    border: 1px solid rgba(245,237,224,0.3);
+    padding: 14px 28px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 28px;
+    right: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    animation: fadeUp 1s ease 1s both;
+  }
+  .hero-scroll span {
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    writing-mode: vertical-rl;
+  }
+  .scroll-line {
+    width: 1px;
+    height: 50px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  /* INFO BAR */
+  .info-bar {
+    background: var(--dark-roast);
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    border-top: 1px solid rgba(212,168,83,0.2);
+  }
+  .info-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .info-icon {
+    width: 32px;
+    height: 32px;
+    border: 1px solid rgba(212,168,83,0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  .info-item .label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    display: block;
+  }
+  .info-item .value {
+    font-size: 13px;
+    color: var(--cream);
+  }
+
+  /* SECTION COMMON */
+  section { padding: 70px 24px; }
+
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 10vw, 56px);
+    font-weight: 300;
+    line-height: 1.1;
+    margin-bottom: 20px;
+  }
+
+  .section-title em { font-style: italic; color: var(--gold); }
+
+  /* ABOUT */
+  .about {
+    background: var(--dark-roast);
+    position: relative;
+    overflow: hidden;
+  }
+  .about::before {
+    content: '';
+    position: absolute;
+    top: -50px; right: -80px;
+    width: 250px; height: 250px;
+    background: radial-gradient(circle, rgba(200,120,42,0.12), transparent);
+    border-radius: 50%;
+  }
+
+  .about-text {
+    font-size: 15px;
+    line-height: 1.9;
+    color: var(--muted);
+    margin-bottom: 32px;
+  }
+
+  .about-text strong { color: var(--cream); font-weight: 400; }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 36px;
+    border-top: 1px solid rgba(212,168,83,0.15);
+    padding-top: 32px;
+  }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 44px;
+    font-weight: 300;
+    color: var(--gold);
+    line-height: 1;
+    display: block;
+  }
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 6px;
+    display: block;
+  }
+
+  /* MENU */
+  .menu-section { background: var(--espresso); }
+
+  .menu-categories {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    margin-bottom: 32px;
+    scrollbar-width: none;
+  }
+  .menu-categories::-webkit-scrollbar { display: none; }
+
+  .cat-btn {
+    background: none;
+    border: 1px solid rgba(212,168,83,0.25);
+    color: var(--muted);
+    padding: 8px 18px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    white-space: nowrap;
+    transition: all 0.3s;
+  }
+  .cat-btn.active, .cat-btn:hover {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--espresso);
+  }
+
+  .menu-grid { display: flex; flex-direction: column; gap: 1px; }
+
+  .menu-item {
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    transition: all 0.3s;
+  }
+  .menu-item:hover { padding-left: 8px; }
+
+  .item-info { flex: 1; }
+  .item-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--cream);
+    margin-bottom: 4px;
+  }
+  .item-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .item-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    color: var(--gold);
+    white-space: nowrap;
+    font-weight: 300;
+  }
+
+  /* GALLERY */
+  .gallery-section { background: var(--dark-roast); }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 32px;
+  }
+  .gallery-item {
+    border-radius: 3px;
+    overflow: hidden;
+    aspect-ratio: 1;
+    background: var(--medium-roast);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .gallery-item:first-child {
+    grid-column: span 2;
+    aspect-ratio: 16/9;
+  }
+  .gallery-placeholder {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    font-style: italic;
+    color: rgba(245,237,224,0.2);
+    letter-spacing: 2px;
+    text-align: center;
+    padding: 16px;
+  }
+  .gallery-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(26,15,8,0.6), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .gallery-item:hover .gallery-overlay { opacity: 1; }
+
+  /* VISIT */
+  .visit-section {
+    background: var(--espresso);
+  }
+  .visit-card {
+    background: var(--dark-roast);
+    border: 1px solid rgba(212,168,83,0.15);
+    border-radius: 4px;
+    padding: 28px 24px;
+    margin-top: 32px;
+  }
+  .visit-row {
+    display: flex;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    align-items: flex-start;
+  }
+  .visit-row:last-child { border-bottom: none; }
+  .v-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+  .v-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 4px;
+    display: block;
+  }
+  .v-text {
+    font-size: 14px;
+    color: var(--cream);
+    line-height: 1.6;
+  }
+  .v-text a { color: var(--gold); text-decoration: none; }
+
+  .map-embed {
+    margin-top: 20px;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid rgba(212,168,83,0.15);
+  }
+  .map-embed iframe {
+    width: 100%;
+    height: 220px;
+    border: none;
+    display: block;
+    filter: grayscale(30%) sepia(20%);
+  }
+
+  /* RESERVATION */
+  .reserve-section {
+    background: linear-gradient(135deg, var(--medium-roast), var(--dark-roast));
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .reserve-section::before {
+    content: '"';
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 300px;
+    color: rgba(255,255,255,0.03);
+    line-height: 1;
+    pointer-events: none;
+  }
+  .reserve-section .section-title { color: var(--warm-white); }
+
+  .reserve-form {
+    margin-top: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    text-align: left;
+  }
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .form-field label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .form-field input, .form-field select {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(212,168,83,0.2);
+    border-radius: 2px;
+    padding: 12px 16px;
+    color: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s;
+    -webkit-appearance: none;
+  }
+  .form-field input:focus, .form-field select:focus {
+    border-color: var(--gold);
+  }
+  .form-field select option { background: var(--dark-roast); }
+
+  .form-submit {
+    background: var(--gold);
+    color: var(--espresso);
+    border: none;
+    padding: 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.3s;
+    margin-top: 6px;
+    width: 100%;
+  }
+  .form-submit:hover { background: var(--light-gold); }
+
+  /* FOOTER */
+  footer {
+    background: #100904;
+    padding: 40px 24px 32px;
+    border-top: 1px solid rgba(212,168,83,0.1);
+  }
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .footer-tagline {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+  .social-links {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .social-links a {
+    width: 38px; height: 38px;
+    border: 1px solid rgba(212,168,83,0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.3s;
+    color: var(--gold);
+  }
+  .social-links a:hover { background: var(--gold); color: var(--espresso); }
+  .footer-copy {
+    font-size: 11px;
+    color: rgba(138,112,96,0.5);
+    letter-spacing: 1px;
+  }
+
+  /* WHATSAPP FLOAT */
+  .wa-float {
+    position: fixed;
+    bottom: 24px;
+    right: 20px;
+    z-index: 99;
+    background: #25D366;
+    color: white;
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    text-decoration: none;
+    box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+    animation: pulse 2.5s ease-in-out infinite;
+    transition: transform 0.3s;
+  }
+  .wa-float:hover { transform: scale(1.1); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 4px 20px rgba(37,211,102,0.4); }
+    50% { box-shadow: 0 4px 30px rgba(37,211,102,0.7); }
+  }
+
+  /* SCROLL REVEAL */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: all 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* MENU TABS */
+  .menu-content { display: none; }
+  .menu-content.active { display: flex; flex-direction: column; gap: 1px; }
+</style>
+</head>
+<body>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="close-menu" onclick="toggleMenu()">✕</button>
+  <a href="#about" onclick="toggleMenu()">About</a>
+  <a href="#menu" onclick="toggleMenu()">Menu</a>
+  <a href="#gallery" onclick="toggleMenu()">Gallery</a>
+  <a href="#visit" onclick="toggleMenu()">Visit</a>
+  <a href="#reserve" onclick="toggleMenu()">Reserve</a>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Meraki</div>
+  <button class="nav-menu-btn" onclick="toggleMenu()">Menu</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-text">MERAKI</div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+  <span class="hero-badge">Est. Surat · Coffee House</span>
+  <h1>Where every <em>sip</em> tells a story.</h1>
+  <p class="hero-desc">Specialty coffees, handcrafted sweets, and a space that feels like yours. Open daily till 10 PM.</p>
+  <div class="hero-ctas">
+    <a href="#reserve" class="btn-primary">Reserve a Table</a>
+    <a href="#menu" class="btn-outline">See Menu</a>
+  </div>
+</section>
+
+<!-- INFO BAR -->
+<div class="info-bar">
+  <div class="info-item reveal">
+    <div class="info-icon">📍</div>
+    <div>
+      <span class="label">Location</span>
+      <span class="value">Sangam Society, Athwa, Surat</span>
+    </div>
+  </div>
+  <div class="info-item reveal">
+    <div class="info-icon">🕙</div>
+    <div>
+      <span class="label">Hours</span>
+      <span class="value">Daily · Open until 10 PM</span>
+    </div>
+  </div>
+  <div class="info-item reveal">
+    <div class="info-icon">⭐</div>
+    <div>
+      <span class="label">Rating</span>
+      <span class="value">4.6 / 5 · 1,363 Reviews</span>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <span class="section-label reveal">Our Story</span>
+  <h2 class="section-title reveal">Crafted with <em>soul.</em></h2>
+  <p class="about-text reveal">
+    At Meraki, we believe <strong>coffee is a feeling</strong>. Every cup is prepared with intentional care — from bean selection to the final pour. Our cozy, modern space in the heart of Surat invites you to slow down, connect, and savor the moment.
+  </p>
+  <p class="about-text reveal">
+    Whether you're here for a quick espresso or a long afternoon with friends, <strong>Meraki is your place</strong>. Casual enough for everyday, special enough for every occasion.
+  </p>
+  <div class="stats-row">
+    <div class="reveal">
+      <span class="stat-num">4.6★</span>
+      <span class="stat-label">Google Rating</span>
+    </div>
+    <div class="reveal">
+      <span class="stat-num">1363+</span>
+      <span class="stat-label">Happy Reviews</span>
+    </div>
+    <div class="reveal">
+      <span class="stat-num">30+</span>
+      <span class="stat-label">Coffee Blends</span>
+    </div>
+    <div class="reveal">
+      <span class="stat-num">∞</span>
+      <span class="stat-label">Good Vibes</span>
+    </div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section class="menu-section" id="menu">
+  <span class="section-label reveal">What We Serve</span>
+  <h2 class="section-title reveal">Our <em>Menu</em></h2>
+
+  <div class="menu-categories reveal">
+    <button class="cat-btn active" onclick="showCategory('coffee', this)">Coffee</button>
+    <button class="cat-btn" onclick="showCategory('cold', this)">Cold Drinks</button>
+    <button class="cat-btn" onclick="showCategory('food', this)">Eats</button>
+    <button class="cat-btn" onclick="showCategory('sweet', this)">Sweets</button>
+  </div>
+
+  <div id="coffee" class="menu-content active">
+    <div class="menu-item reveal">
+      <div class="item-info">
+        <div class="item-name">Espresso</div>
+        <div class="item-desc">Rich, bold, single origin shot</div>
+      </div>
+      <div class="item-price">₹120</div>
+    </div>
+    <div class="menu-item reveal">
+      <div class="item-info">
+        <div class="item-name">Cappuccino</div>
+        <div class="item-desc">Velvety microfoam, perfect ratio</div>
+      </div>
+      <div class="item-price">₹180</div>
+    </div>
+    <div class="menu-item reveal">
+      <div class="item-info">
+        <div class="item-name">Latte Art</div>
+        <div class="item-desc">Silky milk, house-blend espresso</div>
+      </div>
+      <div class="item-price">₹200</div>
+    </div>
+    <div class="menu-item reveal">
+      <div class="item-info">
+        <div class="item-name">Meraki Special</div>
+        <div class="item-desc">Our signature blend — a house secret</div>
+      </div>
+      <div class="item-price">₹260</div>
+    </div>
+    <div class="menu-item reveal">
+      <div class="item-info">
+        <div class="item-name">Pour Over</div>
+        <div class="item-desc">Single origin, slow brewed</div>
+      </div>
+      <div class="item-price">₹280</div>
+    </div>
+  </div>
+
+  <div id="cold" class="menu-content">
+    <div class="menu-item reveal">
+      <div class="item-info">
+        <div class="item-name">Cold Brew</div>
+        <div class="item-desc">12-hour steeped, smooth & strong</div>
+      </div>
+      <div class="item-price">₹220</div>
+    </div>
+    <div class="menu-item reveal">
+      <div class="item-info">
+        <div class="item-name">Iced Latte</div>
+        <div class="item-desc">Chilled espresso, fresh milk</div>
+      </div>
+      <div class="item-price">₹200</div>
+    </div>
+    <div class="menu-item reveal">
+      <div class="item-info">
+        <div class="item-name">Frappe</div>
+        <div class="item-desc">Blended ice, coffee, cream</div>
+      </div>
+      <div class="item-price">₹240</div>
+    </div>
+    <div class="menu-item reveal">
+      <div class="item-info">
+        <div class="item-name">Matcha Latte</div>
+        <div class="item-desc">Premium Japanese matcha, oat milk</div>
+      </div>
+      <div class="item-price">₹250</div>
+    </div>
+  </div>
+
+  <div id="food" class="menu-content">
+    <div class="menu-item reveal">
+      <div class="item-info">
+        <div class="item-name">Avocado Toast</div>
+        <div class="item-desc">Sourdough, smashed avo, chili flakes</div>
+      </div>
+      <div class="item-price">₹280</div>
+    </div>
+    <div class="menu-item reveal">
+      <div class="item-info">
+        <div class="item-name">Club Sandwich</div>
+        <div class="item-desc">Triple decker, grilled to perfection</div>
+      </div>
+      <div class="item-price">₹320</div>
+    </div>
+    <div class="menu-item reveal">
+      <div class="item-info">
+        <div class="item-name">Pasta Alfredo</div>
+        <div class="item-desc">Creamy white sauce, herb finish</div>
+      </div>
+      <div class="item-price">₹350</div>
+    </div>
+  </div>
+
+  <div id="sweet" class="menu-content">
+    <div class="menu-item reveal">
+      <div class="item-info">
+        <div class="item-name">Tiramisu</div>
+        <div class="item-desc">Classic Italian, coffee soaked</div>
+      </div>
+      <div class="item-price">₹220</div>
+    </div>
+    <div class="menu-item reveal">
+      <div class="item-info">
+        <div class="item-name">Brownie Fudge</div>
+        <div class="item-desc">Warm, gooey, served with ice cream</div>
+      </div>
+      <div class="item-price">₹180</div>
+    </div>
+    <div class="menu-item reveal">
+      <div class="item-info">
+        <div class="item-name">Cheesecake Slice</div>
+        <div class="item-desc">New York style, berry compote</div>
+      </div>
+      <div class="item-price">₹200</div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery-section" id="gallery">
+  <span class="section-label reveal">The Space</span>
+  <h2 class="section-title reveal">Feel the <em>Vibe</em></h2>
+  <div class="gallery-grid">
+    <div class="gallery-item">
+      <div class="gallery-overlay"></div>
+      <div class="gallery-placeholder">Main Hall<br>[ Add Your Photo ]</div>
+    </div>
+    <div class="gallery-item">
+      <div class="gallery-overlay"></div>
+      <div class="gallery-placeholder">Coffee<br>[ Photo ]</div>
+    </div>
+    <div class="gallery-item">
+      <div class="gallery-overlay"></div>
+      <div class="gallery-placeholder">Desserts<br>[ Photo ]</div>
+    </div>
+    <div class="gallery-item">
+      <div class="gallery-overlay"></div>
+      <div class="gallery-placeholder">Outdoor<br>[ Photo ]</div>
+    </div>
+    <div class="gallery-item">
+      <div class="gallery-overlay"></div>
+      <div class="gallery-placeholder">Lounge<br>[ Photo ]</div>
+    </div>
+  </div>
+</section>
+
+<!-- VISIT -->
+<section class="visit-section" id="visit">
+  <span class="section-label reveal">Find Us</span>
+  <h2 class="section-title reveal">Come <em>Visit</em></h2>
+  <div class="visit-card reveal">
+    <div class="visit-row">
+      <div class="v-icon">📍</div>
+      <div>
+        <span class="v-label">Address</span>
+        <span class="v-text">Sangam Society, 201, SNS Sparkle, 3, opp. Starbucks, City Light Town, Athwa, Surat, Gujarat 395007</span>
+      </div>
+    </div>
+    <div class="visit-row">
+      <div class="v-icon">🕙</div>
+      <div>
+        <span class="v-label">Hours</span>
+        <span class="v-text">Monday – Sunday<br>Open · Closes 10 PM</span>
+      </div>
+    </div>
+    <div class="visit-row">
+      <div class="v-icon">📞</div>
+      <div>
+        <span class="v-label">Contact</span>
+        <span class="v-text"><a href="tel:+919999999999">+91 99999 99999</a></span>
+      </div>
+    </div>
+    <div class="visit-row">
+      <div class="v-icon">🚗</div>
+      <div>
+        <span class="v-label">Options</span>
+        <span class="v-text">Dine-in · Drive-through · No-contact Delivery</span>
+      </div>
+    </div>
+  </div>
+  <div class="map-embed reveal">
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3720.6!2d72.7547!3d21.1376!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be04de7ecbaaa23%3A0xe9a2068a7b199596!2sMeraki%20The%20Coffee%20House!5e0!3m2!1sen!2sin!4v1"
+      allowfullscreen="" loading="lazy">
+    </iframe>
+  </div>
+</section>
+
+<!-- RESERVE -->
+<section class="reserve-section" id="reserve">
+  <span class="section-label reveal">Book a Spot</span>
+  <h2 class="section-title reveal">Reserve a <em>Table</em></h2>
+  <p style="color:var(--muted);font-size:14px;margin-top:8px;" class="reveal">Takes 30 seconds. No deposit needed.</p>
+  <form class="reserve-form" onsubmit="handleReserve(event)">
+    <div class="form-field reveal">
+      <label>Your Name</label>
+      <input type="text" placeholder="e.g. Priya Shah" required>
+    </div>
+    <div class="form-field reveal">
+      <label>Phone Number</label>
+      <input type="tel" placeholder="+91 98765 43210" required>
+    </div>
+    <div class="form-field reveal">
+      <label>Date</label>
+      <input type="date" required>
+    </div>
+    <div class="form-field reveal">
+      <label>Time</label>
+      <select required>
+        <option value="">Select time</option>
+        <option>11:00 AM</option>
+        <option>12:00 PM</option>
+        <option>1:00 PM</option>
+        <option>2:00 PM</option>
+        <option>3:00 PM</option>
+        <option>4:00 PM</option>
+        <option>5:00 PM</option>
+        <option>6:00 PM</option>
+        <option>7:00 PM</option>
+        <option>8:00 PM</option>
+        <option>9:00 PM</option>
+      </select>
+    </div>
+    <div class="form-field reveal">
+      <label>Guests</label>
+      <select required>
+        <option value="">How many?</option>
+        <option>1</option>
+        <option>2</option>
+        <option>3</option>
+        <option>4</option>
+        <option>5+</option>
+      </select>
+    </div>
+    <button type="submit" class="form-submit reveal">Confirm Reservation</button>
+  </form>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">MERAKI</div>
+  <div class="footer-tagline">The Coffee House · Surat</div>
+  <div class="social-links">
+    <a href="#" title="Instagram">📷</a>
+    <a href="#" title="WhatsApp">💬</a>
+    <a href="#" title="Facebook">👍</a>
+  </div>
+  <p class="footer-copy">© 2025 Meraki The Coffee House · All rights reserved</p>
+</footer>
+
+<!-- WHATSAPP FLOAT -->
+<a class="wa-float" href="https://wa.me/919999999999" target="_blank" title="Chat on WhatsApp">💬</a>
+
+<script>
+  // MENU TOGGLE
+  function toggleMenu() {
+    const m = document.getElementById('mobileMenu');
+    m.classList.toggle('open');
+  }
+
+  // CATEGORY TABS
+  function showCategory(id, btn) {
+    document.querySelectorAll('.menu-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  // SCROLL REVEAL
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // NAV BG ON SCROLL
+  window.addEventListener('scroll', () => {
+    const nav = document.querySelector('nav');
+    if (window.scrollY > 60) {
+      nav.style.background = 'rgba(26,15,8,0.97)';
+    } else {
+      nav.style.background = 'linear-gradient(to bottom, rgba(26,15,8,0.95), transparent)';
+    }
+  });
+
+  // FORM SUBMIT
+  function handleReserve(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('.form-submit');
+    btn.textContent = '✓ Reservation Confirmed!';
+    btn.style.background = '#4CAF50';
+    btn.style.color = 'white';
+    setTimeout(() => {
+      btn.textContent = 'Confirm Reservation';
+      btn.style.background = '';
+      btn.style.color = '';
+      e.target.reset();
+    }, 3000);
+  }
+</script>
+</body>
+</html>
